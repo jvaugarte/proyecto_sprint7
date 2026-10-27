@@ -218,3 +218,5 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+# Entorno virtual del proyecto Sprint 7
+vehicles_env/
