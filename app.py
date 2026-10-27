@@ -4,9 +4,9 @@ import pandas as pd
 import plotly.express as px
 from pathlib import Path
 
-# Configuración de la página
+# Configuración de la aplicación
 st.set_page_config(
-    page_title="Análisis de vehículos",
+    page_title="Análisis de vehículos - Versión 2",
     page_icon="🚗",
     layout="wide"
 )
@@ -14,35 +14,33 @@ st.set_page_config(
 # Encabezado principal
 st.header("Análisis de anuncios de vehículos usados")
 
-# Descripción
 st.write(
-    "Esta aplicación permite explorar los datos "
-    "de anuncios de vehículos usados en Estados Unidos."
+    "Explora los datos de anuncios de vehículos usados "
+    "en Estados Unidos mediante gráficos interactivos."
 )
 
-# Localizar el archivo CSV
+# Cargar datos
 ruta_csv = Path(__file__).resolve().parent / "vehicles_us.csv"
 
-# Leer los datos
 car_data = pd.read_csv(ruta_csv)
 
-# Mostrar información general
+# Información general
 st.subheader("Información del conjunto de datos")
-
 st.write("Número de vehículos:", len(car_data))
 
-# Crear botón
-hist_button = st.button("Construir histograma")
+# Sección de visualizaciones
+st.subheader("Selecciona los gráficos que deseas visualizar")
 
-# Ejecutar al presionar el botón
-if hist_button:
+# Casillas de verificación
+build_histogram = st.checkbox("Construir un histograma")
 
-    st.write(
-        "Distribución del kilometraje de los vehículos"
-    )
+build_scatter = st.checkbox("Construir un gráfico de dispersión")
 
-    # Crear histograma
-    fig = px.histogram(
+# HISTOGRAMA
+if build_histogram:
+    st.write("Distribución del kilometraje de los vehículos")
+
+    fig_hist = px.histogram(
         car_data,
         x="odometer",
         nbins=50,
@@ -52,8 +50,23 @@ if hist_button:
         }
     )
 
-    # Mostrar gráfico interactivo
-    st.plotly_chart(
-        fig,
-        use_container_width=True
+    st.plotly_chart(fig_hist, width="stretch")
+
+
+# GRÁFICO DE DISPERSIÓN
+if build_scatter:
+    st.write("Relación entre el kilometraje y el precio")
+
+    fig_scatter = px.scatter(
+        car_data,
+        x="odometer",
+        y="price",
+        title="Relación entre kilometraje y precio",
+        labels={
+            "odometer": "Kilometraje (millas)",
+            "price": "Precio (USD)"
+        },
+        opacity=0.5
     )
+
+    st.plotly_chart(fig_scatter, width="stretch")
